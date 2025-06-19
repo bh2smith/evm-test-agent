@@ -3,11 +3,10 @@ import {
   addressField,
   FieldParser,
   numberField,
-  signRequestFor,
   validateInput,
 } from "@bitte-ai/agent-sdk";
-import { Address, toHex } from "viem";
-import { SEPOLIA_CHAIN_ID } from "@/src/app/config";
+import { Address} from "viem";
+import { buildSendTransactions } from "../../logic";
 
 interface Input {
   numTxs: number;
@@ -21,32 +20,10 @@ const parsers: FieldParser<Input> = {
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    console.log("sendTransaction/", searchParams);
-    const { numTxs, evmAddress: self } = validateInput<Input>(
-      searchParams,
-      parsers,
-    );
-
-    const metaTransactions = Array.from({ length: numTxs }, (_, i) => {
-      const index = i + 1;
-      return {
-        to: self,
-        value: "0x00",
-        data: toHex(index),
-      };
-    });
-
-    return NextResponse.json(
-      {
-        evmSignRequest: signRequestFor({
-          chainId: SEPOLIA_CHAIN_ID,
-          metaTransactions,
-        }),
-        meta: `${numTxs} non-trivial transactions to ${self} with no value.`,
-      },
-      { status: 200 },
-    );
+    const { searchParams: search } = new URL(request.url);
+    console.log("sendTransaction/", search);
+    const { numTxs, evmAddress: self } = validateInput<Input>(search,parsers);
+    return NextResponse.json(buildSendTransactions(self, numTxs), { status: 200 });
   } catch (error) {
     console.error("Error generating EVM transaction:", error);
     return NextResponse.json(
