@@ -78,12 +78,24 @@ export async function GET() {
         get: {
           summary: "returns non-trivial eth_sign request",
           description:
-            "Constructs eth_sign payload based on user's input message (to sign).",
+            "Constructs personal_sign payload based on user's input message (to sign).",
           operationId: "personal_sign",
           parameters: [
             { $ref: "#/components/parameters/message" },
             { $ref: "#/components/parameters/evmAddress" },
           ],
+          responses: {
+            "200": { $ref: "#/components/responses/SignRequestResponse200" },
+          },
+        },
+      },
+      "/api/tools/eth_signTypedData": {
+        get: {
+          summary: "returns non-trivial eth_signTypedData request.",
+          description:
+            "Constructs signable (expired) eth_signTypedData payload.",
+          operationId: "eth_signTypedData",
+          parameters: [{ $ref: "#/components/parameters/evmAddress" }],
           responses: {
             "200": { $ref: "#/components/responses/SignRequestResponse200" },
           },

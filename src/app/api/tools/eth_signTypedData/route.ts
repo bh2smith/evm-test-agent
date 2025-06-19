@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     };
 
     const message = {
-      agent: evmAddress,
+      user: evmAddress,
       action: "DEMO SIGNATURE — NOT USABLE",
       expires: 0,
       note: "This signature is expired and only for testing/demo purposes.",
