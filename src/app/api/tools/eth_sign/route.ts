@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       {
-        evmSignRequest: {
+        transaction: {
           method: "eth_sign",
           params: [evmAddress, messageHex],
         },
