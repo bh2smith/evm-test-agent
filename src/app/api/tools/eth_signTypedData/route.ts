@@ -55,9 +55,10 @@ export async function GET(request: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error generating typed data sign request:", error);
+    const publicMessage = "Error generating eth_signTypedData payload:";
+    console.error(publicMessage, error);
     return NextResponse.json(
-      { error: "Failed to generate typed data request" },
+      { error: publicMessage },
       { status: 500 },
     );
   }

@@ -36,9 +36,10 @@ export async function GET(request: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error generating personal_sign request:", error);
+    const publicMessage = "Error generating personal_sign payload:";
+    console.error(publicMessage, error);
     return NextResponse.json(
-      { error: "Failed to generate personal_sign request" },
+      { error: publicMessage },
       { status: 500 },
     );
   }
