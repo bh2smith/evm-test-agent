@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
-import { addressField, FieldParser, validateInput } from "@bitte-ai/agent-sdk";
-import { Address } from "viem";
 import { SEPOLIA_CHAIN_ID } from "@/src/app/config";
-
-interface Input {
-  evmAddress: Address;
-}
-
-const parsers: FieldParser<Input> = {
-  evmAddress: addressField,
-};
+import { SignMessageSchema } from "../../schema";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const { evmAddress } = validateInput<Input>(searchParams, parsers);
+    const { evmAddress } = SignMessageSchema.parse(Object.fromEntries(searchParams.entries()));
 
     const domain = {
       name: "Bitte Test EVM Agent",
