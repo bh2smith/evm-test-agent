@@ -1,28 +1,12 @@
 import { NextResponse } from "next/server";
-import {
-  addressField,
-  FieldParser,
-  numberField,
-  validateInput,
-} from "@bitte-ai/agent-sdk";
-import { Address} from "viem";
 import { buildSendTransactions } from "../../logic";
-
-interface Input {
-  numTxs: number;
-  evmAddress: Address;
-}
-
-const parsers: FieldParser<Input> = {
-  numTxs: numberField,
-  evmAddress: addressField,
-};
+import { SendTransactionSchema } from "../../schema";
 
 export async function GET(request: Request) {
   try {
-    const { searchParams: search } = new URL(request.url);
-    console.log("sendTransaction/", search);
-    const { numTxs, evmAddress: self } = validateInput<Input>(search,parsers);
+    const { searchParams } = new URL(request.url);
+    console.log("sendTransaction/", searchParams);
+    const { numTxs, evmAddress: self } = SendTransactionSchema.parse(Object.fromEntries(searchParams.entries()));
     return NextResponse.json(buildSendTransactions(self, numTxs), { status: 200 });
   } catch (error) {
     const publicMessage = "Error generating EVM transaction:";
