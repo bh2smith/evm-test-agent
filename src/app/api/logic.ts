@@ -20,6 +20,6 @@ export function buildSendTransactions(to: Address, numTxs: number): {
           chainId: SEPOLIA_CHAIN_ID,
           metaTransactions,
         }),
-        meta: `${numTxs} non-trivial transactions to ${self} with no value.`,
+        meta: `${numTxs} non-trivial transactions to ${to} with no value.`,
       }
 }
