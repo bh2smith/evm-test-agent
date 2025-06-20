@@ -6,7 +6,7 @@ import { SEPOLIA_CHAIN_ID } from "../config";
 type SignRequest = ReturnType<typeof signRequestFor>;
 
 export function buildSendTransactions(to: Address, numTxs: number): {
-  evmSignRequest: SignRequest, meta: string} {
+  transaction: SignRequest, meta: string} {
       const metaTransactions = Array.from({ length: numTxs }, (_, i) => {
         const index = i + 1;
         return {
@@ -16,7 +16,7 @@ export function buildSendTransactions(to: Address, numTxs: number): {
         };
       });
       return {
-        evmSignRequest: signRequestFor({
+        transaction: signRequestFor({
           chainId: SEPOLIA_CHAIN_ID,
           metaTransactions,
         }),

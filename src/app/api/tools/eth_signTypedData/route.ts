@@ -41,7 +41,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       {
-        evmSignRequest: {
+        transaction: {
           method: "eth_signTypedDataV4",
           params: {
             domain,
