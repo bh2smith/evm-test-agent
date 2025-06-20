@@ -25,9 +25,10 @@ export async function GET(request: Request) {
     const { numTxs, evmAddress: self } = validateInput<Input>(search,parsers);
     return NextResponse.json(buildSendTransactions(self, numTxs), { status: 200 });
   } catch (error) {
-    console.error("Error generating EVM transaction:", error);
+    const publicMessage = "Error generating EVM transaction:";
+    console.error(publicMessage, error);
     return NextResponse.json(
-      { error: "Failed to generate EVM transaction" },
+      { error: publicMessage },
       { status: 500 },
     );
   }
