@@ -51,7 +51,8 @@ export async function GET() {
             "Constructs non-trivial, zero-valued transactions to self",
           operationId: "sendTransaction",
           parameters: [
-            { $ref: "#/components/parameters/number" },
+            { $ref: "#/components/parameters/numSuccess" },
+            { $ref: "#/components/parameters/numFail" },
             { $ref: "#/components/parameters/evmAddress" },
           ],
           responses: {
@@ -105,10 +106,15 @@ export async function GET() {
     components: {
       parameters: {
         chainId: chainIdParam,
-        number: {
+        numSuccess: {
           ...chainIdParam,
-          name: "numTxs",
-          description: "Number of transactions",
+          name: "numSuccess",
+          description: "Number of successful transactions",
+        },
+        numFail: {
+          ...chainIdParam,
+          name: "numFail",
+          description: "Number of failing transactions",
         },
         message: {
           name: "message",
