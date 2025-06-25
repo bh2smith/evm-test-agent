@@ -12,7 +12,8 @@ export const SignMessageSchema = z.object({
 });
 
 export const SendTransactionSchema = z.object({
-  numTxs: z.coerce.number().int().min(1, "numTxs must be at least 1"),
+  numSuccess: z.coerce.number().int().min(1, "numTxs must be at least 1"),
+  numFail: z.coerce.number().int().min(0, "numTxs must be at least 0").default(0),
   evmAddress: evmAddressSchema,
 });
 
