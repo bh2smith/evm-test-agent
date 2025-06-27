@@ -104,13 +104,14 @@ export async function GET() {
         },
         numFail: {
           ...chainIdParam,
+          required: false,
           name: "numFail",
           description: "Number of failing transactions",
         },
         message: {
           name: "message",
           in: "query",
-          required: true,
+          required: false,
           description: "any text message",
           schema: { type: "string" },
           example: "Hello Bitte",
