@@ -93,6 +93,55 @@ export async function GET() {
           },
         },
       },
+      "/api/tools/validate": {
+        get: {
+          summary: "Validates Signed Message Signatures",
+          description:
+            "Returns true or false depending if the signature came from the correct address for the given message data.",
+          operationId: "validate",
+          parameters: [
+            {
+              name: "message",
+              in: "query",
+              required: true,
+              description:
+                "Message to validate. Can be a string or an EIP-712 TypedData object.",
+              schema: {
+                oneOf: [
+                  { type: "string" },
+                  { $ref: "#/components/schemas/TypedData" },
+                ],
+              },
+            },
+            { $ref: "#/components/parameters/evmAddress" },
+            {
+              name: "signature",
+              in: "query",
+              required: true,
+              description: "Signature as hex bytes (0x...)",
+              schema: {
+                type: "string",
+                pattern: "^0x[a-fA-F0-9]+$",
+              },
+            },
+          ],
+          responses: {
+            "200": {
+              description: "Validation result",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      valid: { type: "boolean" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     components: {
       parameters: {
@@ -117,6 +166,7 @@ export async function GET() {
           example: "Hello Bitte",
         },
         evmAddress: { ...addressParam, name: "evmAddress" },
+        signature: { ...addressParam, name: "signature" },
       },
       responses: {
         SignRequestResponse200,
@@ -125,6 +175,30 @@ export async function GET() {
         Address: AddressSchema,
         MetaTransaction: MetaTransactionSchema,
         SignRequest: SignRequestSchema,
+        TypedData: {
+          type: "object",
+          description: "EIP-712 TypedData object",
+          required: ["types", "primaryType", "domain", "message"],
+          properties: {
+            types: {
+              type: "object",
+              additionalProperties: {
+                type: "array",
+                items: {
+                  type: "object",
+                  required: ["name", "type"],
+                  properties: {
+                    name: { type: "string" },
+                    type: { type: "string" },
+                  },
+                },
+              },
+            },
+            primaryType: { type: "string" },
+            domain: { type: "object" },
+            message: { type: "object" },
+          },
+        },
       },
     },
   };
