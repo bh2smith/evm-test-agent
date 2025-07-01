@@ -1,6 +1,17 @@
-import { Address, maxUint256, toHex } from "viem";
+import { Address, maxUint256, toHex, Hex, serializeSignature } from "viem";
 import { signRequestFor } from "@bitte-ai/agent-sdk";
 import { SEPOLIA_CHAIN_ID } from "../config";
+
+export const normalizeSignature = (
+  sig: string | { r: string; s: string; v: number | string },
+): Hex => {
+  if (typeof sig === "string") return sig as Hex;
+  return serializeSignature({
+    r: sig.r as Hex,
+    s: sig.s as Hex,
+    v: BigInt(typeof sig.v === "string" ? parseInt(sig.v, 16) : sig.v),
+  });
+};
 
 type SignRequest = ReturnType<typeof signRequestFor>;
 
