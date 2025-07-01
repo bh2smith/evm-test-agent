@@ -118,7 +118,8 @@ export async function GET() {
               name: "signature",
               in: "query",
               required: true,
-              description: "The cryptographic signature to validate. Must be a 65-byte hex string starting with '0x' (e.g., '0x1234...'). This signature should have been created by signing the provided message with the private key corresponding to the evmAddress.",
+              description:
+                "The cryptographic signature to validate. Must be a 65-byte hex string starting with '0x' (e.g., '0x1234...'). This signature should have been created by signing the provided message with the private key corresponding to the evmAddress.",
               schema: {
                 type: "string",
                 pattern: "^0x[a-fA-F0-9]+$",
