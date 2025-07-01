@@ -1,6 +1,17 @@
-import { Address, maxUint256, toHex, Hex, serializeSignature } from "viem";
 import { signRequestFor } from "@bitte-ai/agent-sdk";
 import { SEPOLIA_CHAIN_ID } from "../config";
+import {
+  recoverAddress,
+  hashMessage,
+  recoverTypedDataAddress,
+  maxUint256,
+  toHex,
+  Hex,
+  serializeSignature,
+  type Address,
+  isAddressEqual,
+} from "viem";
+import { MessageData } from "./schema";
 
 export const normalizeSignature = (
   sig: string | { r: string; s: string; v: number | string },
@@ -46,4 +57,24 @@ export function buildSendTransactions(
     }),
     meta: `${numSuccess + numFail} non-trivial transactions to ${to} with ${numSuccess} succeeding & ${numFail} failing.`,
   };
+}
+
+export async function verifySignature(
+  evmAddress: Address,
+  messageData: MessageData,
+  signature: Hex,
+) {
+  let signer: Address;
+  if (typeof messageData === "string") {
+    signer = await recoverAddress({
+      hash: hashMessage(messageData as string),
+      signature,
+    });
+  } else {
+    signer = await recoverTypedDataAddress({
+      ...messageData,
+      signature,
+    });
+  }
+  return isAddressEqual(signer, evmAddress);
 }

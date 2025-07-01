@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
 import { SignatureValidationSchema } from "../../schema";
-import {
-  recoverAddress,
-  hashMessage,
-  recoverTypedDataAddress,
-  type Address,
-} from "viem";
-import { isAddressEqual } from "viem/utils";
-import { normalizeSignature } from "../../logic";
+import { normalizeSignature, verifySignature } from "../../logic";
 
 export async function GET(request: Request) {
   try {
@@ -17,23 +10,12 @@ export async function GET(request: Request) {
       SignatureValidationSchema.parse(
         Object.fromEntries(searchParams.entries()),
       );
-    const hexSignature = normalizeSignature(signature);
-    let signer: Address;
-    if (typeof messageData === "string") {
-      signer = await recoverAddress({
-        hash: hashMessage(messageData as string),
-        signature: hexSignature,
-      });
-    } else {
-      signer = await recoverTypedDataAddress({
-        ...messageData,
-        signature: hexSignature,
-      });
-    }
-    return NextResponse.json(
-      { valid: isAddressEqual(signer, evmAddress) },
-      { status: 200 },
+    const valid = await verifySignature(
+      evmAddress,
+      messageData,
+      normalizeSignature(signature),
     );
+    return NextResponse.json({ valid }, { status: 200 });
   } catch (error) {
     const publicMessage = "Error validating payload:";
     console.error(publicMessage, error);
