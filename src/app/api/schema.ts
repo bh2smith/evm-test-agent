@@ -55,7 +55,7 @@ const messageDataSchema = z.union([
 export const SignatureValidationSchema = z.object({
   evmAddress: evmAddressSchema,
   signature: signatureSchema,
-  messageData: messageDataSchema,
+  message: messageDataSchema,
 });
 
 export type MessageData = z.infer<typeof messageDataSchema>;

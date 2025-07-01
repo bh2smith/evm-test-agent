@@ -6,13 +6,13 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     console.log("validate/", searchParams);
-    const { evmAddress, messageData, signature } =
+    const { evmAddress, message, signature } =
       SignatureValidationSchema.parse(
         Object.fromEntries(searchParams.entries()),
       );
     const valid = await verifySignature(
       evmAddress,
-      messageData,
+      message,
       normalizeSignature(signature),
     );
     return NextResponse.json({ valid }, { status: 200 });
