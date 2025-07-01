@@ -9,7 +9,7 @@
     "deploy": "next build && make-agent deploy -u https://evm-test-agent.vercel.app/",
     "start": "next start",
     "lint": "next lint",
-    "fmt": "prettier --write **/*.ts"
+    "fmt": "prettier --write ."
   },
   "dependencies": {
     "@bitte-ai/agent-sdk": "^0.2.3",

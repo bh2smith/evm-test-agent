@@ -7,7 +7,9 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     console.log("personal_sign/", searchParams);
-    const input = SignMessageSchema.parse(Object.fromEntries(searchParams.entries()));
+    const input = SignMessageSchema.parse(
+      Object.fromEntries(searchParams.entries()),
+    );
     const { evmAddress, message = "Default Message" } = input;
     const fullMessage = [
       `Bitte Agent Personal Sign`,
@@ -30,9 +32,6 @@ export async function GET(request: Request) {
   } catch (error) {
     const publicMessage = "Error generating personal_sign payload:";
     console.error(publicMessage, error);
-    return NextResponse.json(
-      { error: publicMessage },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: publicMessage }, { status: 500 });
   }
 }
