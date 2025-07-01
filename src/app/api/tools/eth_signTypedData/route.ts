@@ -35,6 +35,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         transaction: {
+          chainId: SEPOLIA_CHAIN_ID,
           method: "eth_signTypedData_v4",
           params: [evmAddress, dataString],
         },

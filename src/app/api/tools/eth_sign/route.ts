@@ -13,20 +13,14 @@ export async function GET(request: Request) {
     );
     const { evmAddress, message = "Default Message" } = input;
 
-    const fullMessage = [
-      "\x19Bitte Agent Signed Message:",
-      `Chain ID: ${SEPOLIA_CHAIN_ID}`,
-      `Message: ${message}`,
-    ].join("\n");
-    const messageHex = toHex(fullMessage); // Viem handles UTF-8 encoding and hex conversion
-
     return NextResponse.json(
       {
         transaction: {
+          chainId: SEPOLIA_CHAIN_ID,
           method: "eth_sign",
-          params: [evmAddress, messageHex],
+          params: [evmAddress, toHex(message)],
         },
-        meta: `Sign message "${fullMessage}" with ${evmAddress}`,
+        meta: `Sign message "${message}" with ${evmAddress}`,
       },
       { status: 200 },
     );

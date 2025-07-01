@@ -11,19 +11,13 @@ export async function GET(request: Request) {
       Object.fromEntries(searchParams.entries()),
     );
     const { evmAddress, message = "Default Message" } = input;
-    const fullMessage = [
-      `Bitte Agent Personal Sign`,
-      `Chain ID: ${SEPOLIA_CHAIN_ID}`,
-      `Message: ${message}`,
-      `Timestamp: ${new Date().toISOString()}`, // Optional but strongly recommended
-    ].join("\n");
-    const messageHex = toHex(fullMessage); // Raw UTF-8 encoding → hex
 
     return NextResponse.json(
       {
         transaction: {
+          chainId: SEPOLIA_CHAIN_ID,
           method: "personal_sign",
-          params: [messageHex, evmAddress], // NOTE: param order matters
+          params: [toHex(message), evmAddress], // NOTE: param order matters
         },
         meta: `Sign personal message: "${message}"`,
       },
