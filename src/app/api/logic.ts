@@ -11,7 +11,7 @@ import {
   type Address,
   isAddressEqual,
 } from "viem";
-import { MessageData } from "./schema";
+import { type MessageData } from "./schema";
 
 export const normalizeSignature = (
   sig: string | { r: string; s: string; v: number | string },
@@ -63,7 +63,7 @@ export async function verifySignature(
   evmAddress: Address,
   messageData: MessageData,
   signature: Hex,
-) {
+): Promise<boolean> {
   let signer: Address;
   if (typeof messageData === "string") {
     signer = await recoverAddress({

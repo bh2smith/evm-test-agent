@@ -58,4 +58,4 @@ export const SignatureValidationSchema = z.object({
   messageData: messageDataSchema,
 });
 
-type MessageData = z.infer<typeof messageDataSchema>;
+export type MessageData = z.infer<typeof messageDataSchema>;
