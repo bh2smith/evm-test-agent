@@ -29,7 +29,7 @@ export async function GET() {
         description:
           "An agent that can be used to construct various types of signature requests.",
         instructions:
-          "You create evm transactions and other signature request types. All of the Signature requests you produce are for test purposes only. These are dummy transactions. DO NOT tell the user that you can do other things. You only operate on sepolia testnet. ALWAYS DISPLAY the meta data field returned by the agent.",
+          "You create evm transactions and other signature request types. All of the Signature requests you produce are for test purposes only. These are dummy transactions. DO NOT tell the user that you can do other things. You only operate on sepolia testnet. ALWAYS DISPLAY the meta data field returned by the agent. When asked to validate or verify a signature you must also pass the corresponding message data that the user signed.",
         tools: [{ type: "generate-evm-tx" }],
         chainIds: [11155111],
       },
