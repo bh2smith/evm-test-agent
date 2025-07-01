@@ -1,4 +1,4 @@
-import { buildSendTransactions } from "@/src/app/api/logic";
+import { buildSendTransactions, verifySignature } from "@/src/app/api/logic";
 import { randomBytes } from "crypto";
 import { EthTransactionParams } from "near-ca";
 import {
@@ -29,9 +29,9 @@ describe("buildSendTransactions", () => {
   it("builds a valid sign request and signs it with a fresh private key", async () => {
     // Call the builder
     const numTxs = 3;
-    const { evmSignRequest } = buildSendTransactions(account.address, numTxs);
+    const { transaction } = buildSendTransactions(account.address, numTxs);
 
-    const transactions = evmSignRequest.params as EthTransactionParams[];
+    const transactions = transaction.params as EthTransactionParams[];
     // Sign each transaction in the request (simulate)
     const signatures = await Promise.all(
       transactions.map((tx) =>
@@ -62,5 +62,52 @@ describe("buildSendTransactions", () => {
     // Assertions
     expect(transactions).toHaveLength(numTxs);
     expect(recoveredAddresses.every((a) => a === account.address)).toBe(true);
+  });
+});
+
+describe("verifySignature", () => {
+  it("signMessage", async () => {
+    const evmAddress = account.address;
+    const message = "Hello Joe";
+    const signature = await account.signMessage({ message });
+    const valid = await verifySignature(evmAddress, message, signature);
+    expect(valid).toBe(true);
+  });
+
+  it("signTypedData", async () => {
+    const typedData = {
+      types: {
+        Person: [
+          { name: "name", type: "string" },
+          { name: "wallet", type: "address" },
+        ],
+        Mail: [
+          { name: "from", type: "Person" },
+          { name: "to", type: "Person" },
+          { name: "contents", type: "string" },
+        ],
+      },
+      primaryType: "Mail",
+      domain: {
+        name: "Ether Mail",
+        version: "1",
+        chainId: 1,
+        verifyingContract: "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+      },
+      message: {
+        from: {
+          name: "Cow",
+          wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
+        },
+        to: {
+          name: "Bob",
+          wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+        },
+        contents: "Hello, Bob!",
+      },
+    } as const;
+    const signature = await account.signTypedData(typedData);
+    const valid = await verifySignature(account.address, typedData, signature);
+    expect(valid).toBe(true);
   });
 });
