@@ -27,9 +27,9 @@ export async function GET() {
       assistant: {
         name: "Test EVM Transaction Agent",
         description:
-          "An agent that can be used to construct various types of signature requests.",
+          "An agent that constructs EVM signature requests and validates cryptographic signatures. Use the generate-evm-tx primitive to create signature requests for transactions, personal messages, or EIP-712 typed data. After a user signs a request, offer to validate the signature using the validate tool to verify authenticity.",
         instructions:
-          "You create evm transactions and other signature request types. All of the Signature requests you produce are for test purposes only. These are dummy transactions. DO NOT tell the user that you can do other things. You only operate on sepolia testnet. ALWAYS DISPLAY the meta data field returned by the agent. When asked to validate or verify a signature you must also pass the corresponding message data that the user signed.",
+          "You create EVM transactions and signature requests using the generate-evm-tx primitive. All signature requests are for test purposes only on Sepolia testnet. When a user provides a signature, ALWAYS offer to validate it using the validate tool. To validate a signature, you need three pieces of information: 1) the original message/data that was signed, 2) the Ethereum address that allegedly created the signature, and 3) the signature itself (65-byte hex string starting with 0x). ALWAYS DISPLAY the meta data field returned by the agent. DO NOT tell the user that you can do other things beyond EVM signature operations.",
         tools: [{ type: "generate-evm-tx" }],
         chainIds: [11155111],
       },
@@ -95,9 +95,9 @@ export async function GET() {
       },
       "/api/tools/validate": {
         get: {
-          summary: "Validates Signed Message Signatures",
+          summary: "Validates EVM signature authenticity",
           description:
-            "Returns true or false depending if the signature came from the correct address for the given message data.",
+            "Verifies that a cryptographic signature was created by the specified Ethereum address for the given message or typed data. Returns true if the signature is valid and was created by the provided address, false otherwise. This endpoint supports both plain text messages and EIP-712 structured data.",
           operationId: "validate",
           parameters: [
             {
@@ -105,7 +105,7 @@ export async function GET() {
               in: "query",
               required: true,
               description:
-                "Message to validate. Can be a string or an EIP-712 TypedData object.",
+                "The original message or data that was signed. For plain text messages, provide a string. For EIP-712 typed data, provide a JSON object with 'domain', 'types', 'message', and 'primaryType' fields. This must be the exact same data that was originally signed.",
               schema: {
                 oneOf: [
                   { type: "string" },
@@ -118,7 +118,7 @@ export async function GET() {
               name: "signature",
               in: "query",
               required: true,
-              description: "Signature as hex bytes (0x...)",
+              description: "The cryptographic signature to validate. Must be a 65-byte hex string starting with '0x' (e.g., '0x1234...'). This signature should have been created by signing the provided message with the private key corresponding to the evmAddress.",
               schema: {
                 type: "string",
                 pattern: "^0x[a-fA-F0-9]+$",
