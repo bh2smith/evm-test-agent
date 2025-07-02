@@ -65,11 +65,23 @@ export async function verifySignature(
   signature: Hex,
 ): Promise<boolean> {
   let signer: Address;
+
   if (typeof messageData === "string") {
-    signer = await recoverAddress({
-      hash: hashMessage(messageData as string),
-      signature,
-    });
+    
+    // TODO: Add typeguard for EIP712 typed data.
+    try {
+      // Just incase the message is typed data...
+      const messageObject = JSON.parse(messageData);
+      signer = await recoverTypedDataAddress({
+        ...messageObject,
+        signature,
+      });
+    } catch {
+      signer = await recoverAddress({
+        hash: hashMessage(messageData as string),
+        signature,
+      });
+    }
   } else {
     signer = await recoverTypedDataAddress({
       ...messageData,
