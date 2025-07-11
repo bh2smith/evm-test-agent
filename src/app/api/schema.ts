@@ -1,11 +1,14 @@
 import { z } from "zod";
 import { Address, isAddress } from "viem";
 
-const evmAddressSchema = z
-  .string()
-  .refine((val): val is Address => isAddress(val, { strict: false }), {
+const evmAddressSchema = z.custom<Address>(
+  (val) => {
+    return typeof val === "string" && isAddress(val, { strict: false });
+  },
+  {
     message: "Invalid EVM address",
-  });
+  },
+);
 
 export const SignMessageSchema = z.object({
   evmAddress: evmAddressSchema,
@@ -44,9 +47,9 @@ const signatureSchema = z.union([
 const messageDataSchema = z.union([
   z.string(), // plain message
   z.object({
-    domain: z.record(z.unknown()),
-    types: z.record(z.any()),
-    message: z.record(z.unknown()),
+    domain: z.record(z.string(), z.unknown()),
+    types: z.record(z.string(), z.any()),
+    message: z.record(z.string(), z.unknown()),
     primaryType: z.string(),
   }),
 ]);
