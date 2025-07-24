@@ -35,6 +35,32 @@ export async function GET() {
       },
     },
     paths: {
+      "/api/tools/protected": {
+        get: {
+          summary: "x402 pay-walled agent tool",
+          description: "Can only be called with payment provided.",
+          operationId: "sendTransaction",
+          parameters: [],
+          responses: {
+            "200": {
+              description: "Successful response with message",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      message: {
+                        type: "string",
+                      },
+                    },
+                    required: ["message"],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       "/api/tools/sendTransaction": {
         get: {
           summary: "returns non-trivial sendTransaction payloads",
