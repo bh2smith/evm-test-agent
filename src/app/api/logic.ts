@@ -67,7 +67,6 @@ export async function verifySignature(
   let signer: Address;
 
   if (typeof messageData === "string") {
-    
     // TODO: Add typeguard for EIP712 typed data.
     try {
       // Just incase the message is typed data...
