@@ -17,8 +17,9 @@ import {
   iotex,
 } from "viem/chains";
 import { randomBytes } from "crypto";
-import { EthSignTypedDataRequest, SignRequest } from "@bitte-ai/types";
+import { EthSignTypedDataRequest } from "@bitte-ai/types";
 
+const x402Version = 1;
 const useCdpFacilitator = process.env.USE_CDP_FACILITATOR === "true";
 // TODO: Use wallet here (PK) for refund issuance.
 const payTo = (process.env.ADDRESS ||
@@ -61,9 +62,12 @@ export const paywallConfig: X402Config = {
   },
 };
 
-export function getPricePlan(): NextResponse {
+export function getPricePlan(
+  baseUrl: string,
+): Record<string, PaymentRequirement> {
   const { payTo, routes } = paywallConfig;
-  const accepts: Record<string, object> = {};
+
+  const requirements: Record<string, PaymentRequirement> = {};
 
   Object.entries(routes).map(([path, { network, price }]) => {
     const atomicAmount = processPriceToAtomicAmount(price, network);
@@ -71,23 +75,23 @@ export function getPricePlan(): NextResponse {
       return NextResponse.json({ error: atomicAmount.error }, { status: 500 });
     }
     const { maxAmountRequired, asset } = atomicAmount;
-    accepts[path] = {
-      scheme: "exact",
-      network,
-      maxAmountRequired,
-      resource: path,
-      description: "Protected API endpoint",
-      mimeType: "application/json",
-      payTo: getAddress(payTo),
-      maxTimeoutSeconds: 300,
-      asset: getAddress(asset.address),
-      extra: asset.eip712,
+    requirements[path] = {
+      x402Version,
+      accepts: {
+        scheme: "exact",
+        network,
+        maxAmountRequired,
+        resource: `${baseUrl}${path}`,
+        description: "Protected API endpoint",
+        mimeType: "application/json",
+        payTo: getAddress(payTo),
+        maxTimeoutSeconds: 300,
+        asset: getAddress(asset.address),
+        extra: asset.eip712,
+      },
     };
   });
-  return NextResponse.json({
-    x402Version: 1,
-    accepts: toJsonSafe(accepts),
-  });
+  return requirements;
 }
 
 interface PaymentAccept {
@@ -107,10 +111,10 @@ interface PaymentAccept {
   };
 }
 
-export interface PaymentRequiredResponse {
+export interface PaymentRequirement {
   x402Version: number;
-  error: string;
-  accepts: PaymentAccept[];
+  accepts: PaymentAccept;
+  error?: string;
 }
 
 const x402TypedData = {
@@ -138,11 +142,11 @@ const chainMap: Record<Network, Chain> = {
 
 export function encodeTransferWithAuthorizationFor(
   from: Address,
-  paymentRequiredResponse: PaymentRequiredResponse,
+  paymentRequirement: PaymentRequirement,
 ): { signRequest: EthSignTypedDataRequest; network: Network; chain: Chain } {
   // TODO(bh2smith): Handle accepts.length > 1!
   const { network, payTo, maxAmountRequired, maxTimeoutSeconds, extra, asset } =
-    PaymentRequirementsSchema.parse(paymentRequiredResponse.accepts[0]);
+    PaymentRequirementsSchema.parse(paymentRequirement.accepts);
   const chain = chainMap[network];
 
   // Encode TypedData for TransferWithAuthorization (i.e. x402-Permit)
