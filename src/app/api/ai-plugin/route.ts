@@ -37,10 +37,10 @@ export async function GET() {
     paths: {
       "/api/tools/protected": {
         get: {
-          summary: "x402 pay-walled agent tool",
+          summary: "pay-walled agent tool",
           description: "Can only be called with payment provided.",
-          operationId: "sendTransaction",
-          parameters: [],
+          operationId: "protected",
+          parameters: [{ $ref: "#/components/parameters/XPaymentHeader" }],
           responses: {
             "200": {
               description: "Successful response with message",
@@ -59,6 +59,7 @@ export async function GET() {
               },
             },
           },
+          "402": { $ref: "#/components/responses/X402PaymentRequired" },
         },
       },
       "/api/tools/sendTransaction": {
@@ -205,6 +206,15 @@ export async function GET() {
         },
         evmAddress: { ...addressParam, name: "evmAddress" },
         signature: { ...addressParam, name: "signature" },
+        XPaymentHeader: {
+          name: "x-payment",
+          in: "header",
+          // required: true,
+          schema: {
+            type: "string",
+          },
+          description: "Base64-encoded x402 payment authorization payload",
+        },
       },
       responses: {
         SignRequestResponse200,
@@ -228,6 +238,73 @@ export async function GET() {
                   transaction: { $ref: "#/components/schemas/SignRequest" },
                 },
                 required: ["meta", "transaction"],
+              },
+            },
+          },
+        },
+        X402PaymentRequired: {
+          description: "Payment required via x402",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  x402Version: { type: "number", example: 1 },
+                  error: {
+                    type: "string",
+                    example: "X-PAYMENT header is required",
+                  },
+                  accepts: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        scheme: {
+                          type: "string",
+                          enum: ["exact"],
+                        },
+                        network: {
+                          type: "string",
+                          enum: [
+                            "base",
+                            "base-sepolia",
+                            "avalanche",
+                            "avalanche-fuji",
+                            "iotex",
+                          ],
+                        },
+                        maxAmountRequired: { type: "string" },
+                        resource: { type: "string", format: "uri" },
+                        description: { type: "string" },
+                        mimeType: { type: "string" },
+                        payTo: { type: "string" },
+                        maxTimeoutSeconds: { type: "integer" },
+                        asset: { type: "string" },
+                        extra: {
+                          type: "object",
+                          properties: {
+                            name: { type: "string" },
+                            version: { type: "string" },
+                          },
+                          required: ["name", "version"],
+                        },
+                      },
+                      required: [
+                        "scheme",
+                        "network",
+                        "maxAmountRequired",
+                        "resource",
+                        "description",
+                        "mimeType",
+                        "payTo",
+                        "maxTimeoutSeconds",
+                        "asset",
+                        "extra",
+                      ],
+                    },
+                  },
+                },
+                required: ["x402Version", "error", "accepts"],
               },
             },
           },
