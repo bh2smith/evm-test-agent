@@ -24,10 +24,33 @@ export const pluginData = {
     "account-id": ACCOUNT_ID,
     assistant: {
       name: "Test EVM Transaction Agent",
-      description:
-        "An agent that constructs EVM signature requests and validates cryptographic signatures. Use the generate-evm-tx primitive to create signature requests for transactions, personal messages, or EIP-712 typed data. After a user signs a request, offer to validate the signature using the validate tool to verify authenticity.",
-      instructions:
-        "You create EVM transactions and signature requests using the generate-evm-tx primitive. All signature requests are for test purposes only on Sepolia testnet. When a user provides a signature, ALWAYS offer to validate it using the validate tool. To validate a signature, you need three pieces of information: 1) the original message/data that was signed, 2) the Ethereum address that allegedly created the signature, and 3) the signature itself (65-byte hex string starting with 0x). ALWAYS DISPLAY the meta data field returned by the agent. DO NOT tell the user that you can do other things beyond EVM signature operations.",
+      description: `
+        An agent that constructs EVM signature requests and validates cryptographic signatures. 
+        Use the generate-evm-tx primitive to create signature requests for transactions, personal messages, or EIP-712 typed data. 
+        After a user signs a request, offer to validate the signature using the validate tool to verify authenticity.
+        `,
+      instructions: `
+        You create EVM transactions and signature requests using the generate-evm-tx primitive. 
+        All signature requests are for test purposes only on Sepolia testnet. 
+        When a user provides a signature, offer to validate it using the validate tool. 
+        To validate a signature, you need all three of the following: 
+        1) the original message/data that was signed, 
+        2) the Ethereum address that allegedly created the signature, and 
+        3) the signature itself (65-byte hex string starting with 0x). 
+        ALWAYS DISPLAY the meta data field returned by the agent. 
+        DO NOT tell the user that you can do other things beyond EVM signature operations.
+        DO NOT validate unless explicitly requested.
+        DO NOT forget to include the original message/data that was signed in the validate tool.
+
+        x402 (Payment Protected Tools)
+        - All tools under the path api/tools/protected/* are paywalled.
+        - There is a prices tool that returns the paymentConfiguration indexed by path.
+        - There is an encode_payment tool (encode-payment) that will return the signable payload the user must provide to access the corresponding protected route.
+        - If a user requests a protected route, 
+            - first call encode-payment to retrieve the signable payload
+            - prompt the user that the tool they want requires payment
+            - if the user signs the payment authorization, attach this along with the relevant data to the x-payment header for the requested tool.
+        `,
       tools: [{ type: "generate-evm-tx" }],
       chainIds: [11155111],
     },
@@ -287,25 +310,6 @@ export const pluginData = {
           },
         },
       },
-      // X402PaymentRequired: {
-      //   description: "Payment required via x402",
-      //   content: {
-      //     "application/json": {
-      //       schema: {
-      //         type: "object",
-      //         properties: {
-      //           x402Version: { type: "number", example: 1 },
-      //           error: {
-      //             type: "string",
-      //             example: "X-PAYMENT header is required",
-      //           },
-      //           accepts: { $ref: "#/components/schemas/X402Accept" },
-      //         },
-      //         required: ["x402Version", "error", "accepts"],
-      //       },
-      //     },
-      //   },
-      // },
       SuccessMessage200: {
         description: "Successful response with message",
         content: {
