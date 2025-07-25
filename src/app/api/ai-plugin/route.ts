@@ -35,31 +35,40 @@ export async function GET() {
       },
     },
     paths: {
-      "/api/tools/protected": {
+      "/api/tools/prices": {
+        get: {
+          summary: "protected payment requirements",
+          description: "Returns all protected tools and expected payments.",
+          operationId: "prices",
+          parameters: [],
+          responses: {
+            "200": { $ref: "#/components/responses/SuccessMessage200" },
+            "402": { $ref: "#/components/responses/X402PaymentRequired" },
+          },
+        },
+      },
+      "/api/tools/protected/cheap": {
         get: {
           summary: "pay-walled agent tool",
           description: "Can only be called with payment provided.",
-          operationId: "protected",
+          operationId: "cheap-protected",
           parameters: [{ $ref: "#/components/parameters/XPaymentHeader" }],
           responses: {
-            "200": {
-              description: "Successful response with message",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: {
-                      message: {
-                        type: "string",
-                      },
-                    },
-                    required: ["message"],
-                  },
-                },
-              },
-            },
+            "200": { $ref: "#/components/responses/SuccessMessage200" },
+            "402": { $ref: "#/components/responses/X402PaymentRequired" },
           },
-          "402": { $ref: "#/components/responses/X402PaymentRequired" },
+        },
+      },
+      "/api/tools/protected/spensiv": {
+        get: {
+          summary: "pay-walled agent tool",
+          description: "Can only be called with payment provided.",
+          operationId: "spensiv-protected",
+          parameters: [{ $ref: "#/components/parameters/XPaymentHeader" }],
+          responses: {
+            "200": { $ref: "#/components/responses/SuccessMessage200" },
+            "402": { $ref: "#/components/responses/X402PaymentRequired" },
+          },
         },
       },
       "/api/tools/sendTransaction": {
@@ -305,6 +314,22 @@ export async function GET() {
                   },
                 },
                 required: ["x402Version", "error", "accepts"],
+              },
+            },
+          },
+        },
+        SuccessMessage200: {
+          description: "Successful response with message",
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  message: {
+                    type: "string",
+                  },
+                },
+                required: ["message"],
               },
             },
           },
