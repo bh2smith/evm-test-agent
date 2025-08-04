@@ -10,6 +10,8 @@ import {
   serializeSignature,
   type Address,
   isAddressEqual,
+  isHex,
+  hexToString,
 } from "viem";
 import { type MessageData } from "./schema";
 
@@ -65,9 +67,7 @@ export async function verifySignature(
   signature: Hex,
 ): Promise<boolean> {
   let signer: Address;
-
   if (typeof messageData === "string") {
-    
     // TODO: Add typeguard for EIP712 typed data.
     try {
       // Just incase the message is typed data...
@@ -78,7 +78,11 @@ export async function verifySignature(
       });
     } catch {
       signer = await recoverAddress({
-        hash: hashMessage(messageData as string),
+        hash: hashMessage(
+          isHex(messageData)
+            ? hexToString(messageData)
+            : (messageData as string),
+        ),
         signature,
       });
     }
