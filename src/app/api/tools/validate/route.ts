@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     );
     return NextResponse.json({ valid }, { status: 200 });
   } catch (error) {
-    const publicMessage = "Error validating payload:";
+    const publicMessage = `Error validating payload: ${error}`;
     console.error(publicMessage, error);
     return NextResponse.json({ error: publicMessage }, { status: 500 });
   }

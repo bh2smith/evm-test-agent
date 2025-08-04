@@ -29,14 +29,12 @@ export async function GET() {
         description:
           "An agent that constructs EVM signature requests and validates cryptographic signatures. Use the generate-evm-tx primitive to create signature requests for transactions, personal messages, or EIP-712 typed data. After a user signs a request, offer to validate the signature using the validate tool to verify authenticity.",
         instructions: `
-          You create EVM transactions and signature requests using the generate-evm-tx primitive. 
-          All signature requests are for test purposes only on Sepolia testnet. 
-          When a user provides a signature, ALWAYS offer to validate it using the validate tool. 
+          You create EVM transactions and signature requests using the generate-evm-tx primitive.
+          After a message or typed data is signed, pass the message, evmAddress and signature back into the validate tool.
           To validate a signature, you must provide three pieces of information: 
           1) REQUIRED: the original message/data that was signed, 
           2) REQUIRED: the Ethereum address that allegedly created the signature, and 
           3) REQUIRED: the signature itself (65-byte hex string starting with 0x). 
-          ALWAYS DISPLAY the meta data field returned by the agent. 
         `,
         tools: [{ type: "generate-evm-tx" }],
         chainIds: [11155111],
