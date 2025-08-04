@@ -7,6 +7,8 @@ import {
   hexToBigInt,
   toHex,
   recoverTransactionAddress,
+  hashMessage,
+  hexToString,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
@@ -70,6 +72,14 @@ describe("verifySignature", () => {
     const evmAddress = account.address;
     const message = "Hello Joe";
     const signature = await account.signMessage({ message });
+    const valid = await verifySignature(evmAddress, message, signature);
+    expect(valid).toBe(true);
+  });
+  it.only("signMessage: Hello", async () => {
+    const evmAddress = "0xB00b4C1e371DEe4F6F32072641430656D3F7c064";
+    const message = "0x68656c6c6f";
+    const signature =
+      "0x20be843ed0fff5e493b9f72a852b8b9b46b14818f9189596233393807d122f4a05ed462315a192ebffa2b771b37f18be2ab9fbf53e0f45b824c50d9ac10c01361b";
     const valid = await verifySignature(evmAddress, message, signature);
     expect(valid).toBe(true);
   });
