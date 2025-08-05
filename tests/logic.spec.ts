@@ -1,17 +1,24 @@
 import { buildSendTransactions, verifySignature } from "@/src/app/api/logic";
+import { SignRequestSchema } from "@bitte-ai/agent-sdk";
 import { randomBytes } from "crypto";
-import { EthTransactionParams } from "near-ca";
 import {
   createWalletClient,
+  Hex,
   http,
   hexToBigInt,
   toHex,
   recoverTransactionAddress,
-  hashMessage,
-  hexToString,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
+
+interface EthTransactionParams {
+    from: Hex;
+    to: Hex;
+    gas?: Hex;
+    value?: Hex;
+    data?: Hex;
+}
 
 let account: ReturnType<typeof privateKeyToAccount>;
 let walletClient: ReturnType<typeof createWalletClient>;
@@ -32,7 +39,7 @@ describe("buildSendTransactions", () => {
     // Call the builder
     const numTxs = 3;
     const { transaction } = buildSendTransactions(account.address, numTxs);
-
+    SignRequestSchema
     const transactions = transaction.params as EthTransactionParams[];
     // Sign each transaction in the request (simulate)
     const signatures = await Promise.all(
