@@ -102,8 +102,12 @@ export async function GET() {
       "/api/tools/validate": {
         get: {
           summary: "Validates EVM signature authenticity",
-          description:
-            "Verifies that a cryptographic signature was created by the specified Ethereum address for the given message or typed data. Returns true if the signature is valid and was created by the provided address, false otherwise. This endpoint supports both plain text messages and EIP-712 structured data.",
+          description:  `
+            Verifies that a cryptographic signature was created by the specified Ethereum address for the given message or typed data. 
+            Returns true if the signature is valid and was created by the provided address, false otherwise. 
+            This endpoint supports both plain text messages and EIP-712 structured data.
+            All input parameters are required: message, evmAddress and signature!
+          `,
           operationId: "validate",
           parameters: [
             {
