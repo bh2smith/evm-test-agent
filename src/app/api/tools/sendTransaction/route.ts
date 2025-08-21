@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
 import { buildSendTransactions } from "../../logic";
 import { SendTransactionSchema } from "../../schema";
+import { Hex } from "viem";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     console.log("sendTransaction/", searchParams);
-    const { numFail, numSuccess, evmAddress, callData } = SendTransactionSchema.parse(
-      Object.fromEntries(searchParams.entries()),
-    );
+    const { numFail, numSuccess, evmAddress, callData } =
+      SendTransactionSchema.parse(Object.fromEntries(searchParams.entries()));
     return NextResponse.json(
-      buildSendTransactions(evmAddress, numSuccess, numFail),
+      buildSendTransactions(
+        evmAddress,
+        numSuccess,
+        numFail,
+        (callData as Hex) || null,
+      ),
       {
         status: 200,
       },

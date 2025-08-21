@@ -193,7 +193,8 @@ export async function GET() {
           name: "callData",
           in: "query",
           required: false,
-          description: "Hex String with even length representing transaction call data.",
+          description:
+            "Hex String with even length representing transaction call data.",
           schema: { type: "string" },
           example: "0x80081E5",
         },

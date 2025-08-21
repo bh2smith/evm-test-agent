@@ -32,7 +32,7 @@ export function buildSendTransactions(
   to: Address,
   numSuccess: number,
   numFail: number = 0,
-  callData?: Hex
+  callData: Hex | null,
 ): {
   transaction: SignRequest;
   meta: string;
