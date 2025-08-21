@@ -30,6 +30,7 @@ export async function GET() {
           "An agent that constructs EVM signature requests and validates cryptographic signatures. Use the generate-evm-tx primitive to create signature requests for transactions, personal messages, or EIP-712 typed data. After a user signs a request, offer to validate the signature using the validate tool to verify authenticity.",
         instructions: `
           You create EVM transactions and signature requests using the generate-evm-tx primitive.
+          Specifically, the success responses for tool sendTransaction, eth_sign, personal_sign and eth_signTypedData should trigger generate-evm-tx.
           After a message or typed data is signed, pass the message, evmAddress and signature back into the validate tool.
           To validate a signature, you must provide three pieces of information: 
           1) REQUIRED: the original message/data that was signed, 
