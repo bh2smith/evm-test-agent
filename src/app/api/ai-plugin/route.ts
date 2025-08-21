@@ -50,6 +50,7 @@ export async function GET() {
           parameters: [
             { $ref: "#/components/parameters/numSuccess" },
             { $ref: "#/components/parameters/numFail" },
+            { $ref: "#/components/parameters/callData" },
             { $ref: "#/components/parameters/evmAddress" },
           ],
           responses: {
@@ -186,6 +187,14 @@ export async function GET() {
           description: "any text message",
           schema: { type: "string" },
           example: "Hello Bitte",
+        },
+        callData: {
+          name: "callData",
+          in: "query",
+          required: false,
+          description: "Hex String with even length representing transaction call data.",
+          schema: { type: "string" },
+          example: "0x80081E5",
         },
         evmAddress: { ...addressParam, name: "evmAddress" },
         signature: { ...addressParam, name: "signature" },

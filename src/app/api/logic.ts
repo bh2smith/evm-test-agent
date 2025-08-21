@@ -32,6 +32,7 @@ export function buildSendTransactions(
   to: Address,
   numSuccess: number,
   numFail: number = 0,
+  callData?: Hex
 ): {
   transaction: SignRequest;
   meta: string;
@@ -41,7 +42,7 @@ export function buildSendTransactions(
     return {
       to,
       value: toHex("0"),
-      data: toHex(index),
+      data: callData ?? toHex(index),
     };
   });
   const failingTxs = Array.from({ length: numFail }, (_, i) => {
@@ -49,7 +50,7 @@ export function buildSendTransactions(
     return {
       to, // Sending to Self (so no funds lost).
       value: toHex(maxUint256),
-      data: toHex(index),
+      data: callData ?? toHex(index),
     };
   });
   return {

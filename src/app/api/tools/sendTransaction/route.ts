@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     console.log("sendTransaction/", searchParams);
-    const { numFail, numSuccess, evmAddress } = SendTransactionSchema.parse(
+    const { numFail, numSuccess, evmAddress, callData } = SendTransactionSchema.parse(
       Object.fromEntries(searchParams.entries()),
     );
     return NextResponse.json(
