@@ -1,5 +1,5 @@
 import { normalizeSignature } from "@/src/app/api/logic";
-import { SignatureValidationSchema } from "@/src/app/api/schema";
+import { SendTransactionSchema, SignatureValidationSchema } from "@/src/app/api/schema";
 
 describe("verifySignature", () => {
   it("signMessage", async () => {
@@ -10,5 +10,15 @@ describe("verifySignature", () => {
       message: "beer",
     };
     SignatureValidationSchema.parse(params);
+  });
+
+    it("sendTransaction", async () => {
+    const params = {
+      evmAddress: "0x8d99F8b2710e6A3B94d9bf465A98E5273069aCBd",
+      numSuccess: 2,
+      numFail: 0,
+      callData: "0x",
+    };
+    SendTransactionSchema.parse(params);
   });
 });

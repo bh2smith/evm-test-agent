@@ -25,7 +25,7 @@ export const SendTransactionSchema = z.object({
   callData: z
     .string()
     .startsWith("0x")
-    .refine((sig) => /^0x[0-9a-fA-F]{130}$/.test(sig), {
+    .refine((sig) => /^0x[0-9a-fA-F]*$/.test(sig), {
       message: "Invalid hex signature format",
     })
     .optional(),
