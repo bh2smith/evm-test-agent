@@ -9,17 +9,14 @@ export async function GET(request: Request) {
     console.log("sendTransaction/", searchParams);
     const { numFail, numSuccess, evmAddress, callData } =
       SendTransactionSchema.parse(Object.fromEntries(searchParams.entries()));
-    return NextResponse.json(
-      buildSendTransactions(
-        evmAddress,
-        numSuccess,
-        numFail,
-        (callData as Hex) || null,
-      ),
-      {
-        status: 200,
-      },
+    const result = buildSendTransactions(
+      evmAddress,
+      numSuccess,
+      numFail,
+      (callData as Hex) || null,
     );
+    console.log("Response", JSON.stringify(result));
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     const publicMessage = "Error generating EVM transaction:";
     console.error(publicMessage, error);
