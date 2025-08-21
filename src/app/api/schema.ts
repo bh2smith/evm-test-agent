@@ -22,6 +22,13 @@ export const SendTransactionSchema = z.object({
     .int()
     .min(0, "numTxs must be at least 0")
     .default(0),
+  callData: z
+    .string()
+    .startsWith("0x")
+    .refine((sig) => /^0x[0-9a-fA-F]{130}$/.test(sig), {
+      message: "Invalid hex signature format",
+    })
+    .optional(),
   evmAddress: evmAddressSchema,
 });
 
