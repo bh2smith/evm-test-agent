@@ -12,6 +12,7 @@ import {
   isAddressEqual,
   isHex,
   hexToString,
+  toBytes,
 } from "viem";
 import { type MessageData } from "./schema";
 
@@ -32,7 +33,7 @@ export function buildSendTransactions(
   to: Address,
   numSuccess: number,
   numFail: number = 0,
-  callData: Hex | null,
+  callData: Hex | null = null,
 ): {
   transaction: SignRequest;
   meta: string;
@@ -41,7 +42,7 @@ export function buildSendTransactions(
     const index = i + 1;
     return {
       to,
-      value: toHex("0"),
+      value: toHex(toBytes(0)),
       data: callData ?? toHex(index),
     };
   });

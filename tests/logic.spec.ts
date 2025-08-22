@@ -72,6 +72,20 @@ describe("buildSendTransactions", () => {
     expect(transactions).toHaveLength(numTxs);
     expect(recoveredAddresses.every((a) => a === account.address)).toBe(true);
   });
+
+  it("builds transaction with default values", async () => {
+    const { transaction } = buildSendTransactions(account.address, 1);
+    SignRequestSchema;
+    const transactions = transaction.params as EthTransactionParams[];
+    expect(transactions).toStrictEqual([
+      {
+        data: "0x1",
+        from: "0x0000000000000000000000000000000000000000",
+        to: account.address,
+        value: "0x00",
+      },
+    ]);
+  });
 });
 
 describe("verifySignature", () => {
@@ -82,7 +96,8 @@ describe("verifySignature", () => {
     const valid = await verifySignature(evmAddress, message, signature);
     expect(valid).toBe(true);
   });
-  it.only("signMessage: Hello", async () => {
+
+  it("signMessage: Hello", async () => {
     const evmAddress = "0xB00b4C1e371DEe4F6F32072641430656D3F7c064";
     const message = "0x68656c6c6f";
     const signature =
@@ -127,6 +142,7 @@ describe("verifySignature", () => {
     const valid = await verifySignature(account.address, typedData, signature);
     expect(valid).toBe(true);
   });
+
   it("CoW: signTypedData", async () => {
     const message =
       '{"types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Order":[{"name":"sellToken","type":"address"},{"name":"buyToken","type":"address"},{"name":"receiver","type":"address"},{"name":"sellAmount","type":"uint256"},{"name":"buyAmount","type":"uint256"},{"name":"validTo","type":"uint32"},{"name":"appData","type":"bytes32"},{"name":"feeAmount","type":"uint256"},{"name":"kind","type":"string"},{"name":"partiallyFillable","type":"bool"},{"name":"sellTokenBalance","type":"string"},{"name":"buyTokenBalance","type":"string"}]},"domain":{"name":"Gnosis Protocol","version":"v2","chainId":100,"verifyingContract":"0x9008D19f58AAbD9eD0D60971565AA8510560ab41"},"primaryType":"Order","message":{"sellToken":"0x9c58bacc331c9aa871afd802db6379a98e80cedb","buyToken":"0x177127622c4a00f3d409b75571e12cb3c8973d3c","receiver":"0x7f01d9b227593e033bf8d6fc86e634d27aa85568","sellAmount":"9999999999996911424","buyAmount":"3989346271524365385328","validTo":1751464539,"appData":"0x0000000000000000000000000000000000000000000000000000000000000000","feeAmount":"3088576","kind":"sell","partiallyFillable":false,"sellTokenBalance":"erc20","buyTokenBalance":"erc20","signingScheme":"eip712"}}';
