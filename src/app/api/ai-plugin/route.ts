@@ -36,6 +36,7 @@ export async function GET() {
           1) REQUIRED: the original message/data that was signed, 
           2) REQUIRED: the Ethereum address that allegedly created the signature, and 
           3) REQUIRED: the signature itself (65-byte hex string starting with 0x). 
+          Only validate signatures once unless explicitly requested to try again.
         `,
         tools: [{ type: "generate-evm-tx" }],
         chainIds: [11155111],
