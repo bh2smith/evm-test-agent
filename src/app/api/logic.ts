@@ -1,4 +1,4 @@
-import { signRequestFor } from "@bitte-ai/agent-sdk";
+import { SignRequest } from "@bitte-ai/types";
 import { SEPOLIA_CHAIN_ID } from "../config";
 import {
   recoverAddress,
@@ -27,8 +27,6 @@ export const normalizeSignature = (
   });
 };
 
-type SignRequest = ReturnType<typeof signRequestFor>;
-
 export function buildSendTransactions(
   to: Address,
   numSuccess: number,
@@ -55,10 +53,11 @@ export function buildSendTransactions(
     };
   });
   return {
-    transaction: signRequestFor({
+    transaction: {
       chainId: SEPOLIA_CHAIN_ID,
-      metaTransactions: successfullTxs.concat(failingTxs),
-    }),
+      method: "eth_sendTransaction",
+      params: successfullTxs.concat(failingTxs),
+    },
     meta: `${numSuccess + numFail} non-trivial transactions to ${to} with ${numSuccess} succeeding & ${numFail} failing.`,
   };
 }
