@@ -5,7 +5,7 @@ const {
   VERCEL_PROJECT_PRODUCTION_URL,
 } = process.env;
 
-const DEPLOYMENT_URL = (() => {
+const PLUGIN_URL = (() => {
   switch (VERCEL_ENV) {
     case "production":
       return `https://${VERCEL_PROJECT_PRODUCTION_URL}`;
@@ -15,9 +15,6 @@ const DEPLOYMENT_URL = (() => {
       return `http://localhost:${process.env.PORT || 3000}`;
   }
 })();
-
-const PLUGIN_URL =
-  DEPLOYMENT_URL || `${"localhost"}:${process.env.PORT || 3000}`;
 
 const ACCOUNT_ID = process.env.ACCOUNT_ID;
 
