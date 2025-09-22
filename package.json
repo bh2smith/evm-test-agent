@@ -7,8 +7,8 @@
     "api": "tsx src/index.ts",
     "build": "tsc",
     "deploy": "next build && make-agent deploy -u https://evm-test-agent.vercel.app/",
-    "lint": "biome check && prettier --check '{src,tests}/**/*.{js,jsx,ts,tsx}'",
-    "fmt": "biome format --write . && prettier --write '{src,tests}/**/*.{js,jsx,ts,tsx}'"
+    "lint": "biome check && prettier --check .",
+    "fmt": "biome format --write . && prettier --write ."
   },
   "dependencies": {
     "@bitte-ai/agent-sdk": "^0.4.1",

@@ -217,7 +217,7 @@ const manifest = {
           domain: { type: "object" },
           message: { type: "object" },
         },
-      }
+      },
     },
   },
 };
