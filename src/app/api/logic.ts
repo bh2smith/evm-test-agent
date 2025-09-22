@@ -1,4 +1,3 @@
-import { SignRequest } from "@bitte-ai/types";
 import { SEPOLIA_CHAIN_ID } from "../config";
 import {
   recoverAddress,
@@ -15,6 +14,7 @@ import {
   toBytes,
 } from "viem";
 import { type MessageData } from "./schema";
+import { SignRequest } from "@bitte-ai/agent-sdk/evm";
 
 export const normalizeSignature = (
   sig: string | { r: string; s: string; v: number | string },

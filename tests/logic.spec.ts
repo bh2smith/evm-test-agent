@@ -80,7 +80,6 @@ describe("buildSendTransactions", () => {
     expect(transactions).toStrictEqual([
       {
         data: "0x1",
-        from: "0x0000000000000000000000000000000000000000",
         to: account.address,
         value: "0x00",
       },
