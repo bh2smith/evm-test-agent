@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Address, isAddress } from "viem";
+import { Address, isAddress, toHex } from "viem";
 
 const evmAddressSchema = z.custom<Address>(
   (val) => {
@@ -33,22 +33,13 @@ export const SendTransactionSchema = z.object({
 });
 
 // Accept either a full 65-byte hex string or separate r/s/v
-const signatureSchema = z.union([
-  z
-    .string()
-    .startsWith("0x")
-    .refine((sig) => /^0x[0-9a-fA-F]{130}$/.test(sig), {
-      message: "Invalid hex signature format",
-    }),
-  z.object({
-    r: z.string().startsWith("0x").length(66),
-    s: z.string().startsWith("0x").length(66),
-    v: z.union([
-      z.number().int().min(27).max(28),
-      z.string().startsWith("0x").length(4), // e.g. "0x1b" or "0x1c"
-    ]),
-  }),
-]);
+const signatureSchema = z
+  .string()
+  .startsWith("0x")
+  .refine((sig) => /^0x[0-9a-fA-F]{130}$/.test(sig), {
+    message: "Invalid hex signature format",
+  })
+  .transform((x) => toHex(x));
 
 // Message data: either a plain string or EIP-712 object
 const messageDataSchema = z.union([

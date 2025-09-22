@@ -1,4 +1,4 @@
-import { buildSendTransactions, verifySignature } from "@/src/app/api/logic";
+import { buildSendTransactions, verifySignature } from "../src/lib/logic";
 import { SignRequestSchema } from "@bitte-ai/agent-sdk";
 import { randomBytes } from "crypto";
 import {
