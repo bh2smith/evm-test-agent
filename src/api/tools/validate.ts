@@ -5,7 +5,7 @@ import { verifySignature } from "../../lib/logic";
 const ethMessageHandler = Router();
 
 ethMessageHandler.get("/", async (req: Request, res: Response) => {
-  const search = new URL(req.url).searchParams;
+  const search = new URLSearchParams(req.url);
   console.log("validate/", search);
   const { evmAddress, message, signature } = SignatureValidationSchema.parse(
     Object.fromEntries(search.entries()),

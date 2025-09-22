@@ -6,7 +6,7 @@ import { buildSendTransactions } from "../../lib/logic";
 const ethTxHandler = Router();
 
 ethTxHandler.get("/", async (req: Request, res: Response) => {
-  const search = new URL(req.url).searchParams;
+  const search = new URLSearchParams(req.url);
   console.log("sendTransaction/", search);
   const { numFail, numSuccess, evmAddress, callData } =
     SendTransactionSchema.parse(Object.fromEntries(search.entries()));

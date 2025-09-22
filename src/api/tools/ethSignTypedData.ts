@@ -5,7 +5,7 @@ import { SEPOLIA_CHAIN_ID } from "../../config";
 const ethTypedData = Router();
 
 ethTypedData.get("/", async (req: Request, res: Response) => {
-  const search = new URL(req.url).searchParams;
+  const search = new URLSearchParams(req.url);
   console.log("eth_signTypedData/", search);
   const { evmAddress } = SignMessageSchema.parse(
     Object.fromEntries(search.entries()),

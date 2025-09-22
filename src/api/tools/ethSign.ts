@@ -6,7 +6,7 @@ import { SEPOLIA_CHAIN_ID } from "../../config";
 const ethSignHandler = Router();
 
 ethSignHandler.get("/", async (req: Request, res: Response) => {
-  const search = new URL(req.url).searchParams;
+  const search = new URLSearchParams(req.url);
   console.log("eth_sign/", search);
   const input = SignMessageSchema.parse(Object.fromEntries(search.entries()));
   const { evmAddress, message = "Default Message" } = input;
