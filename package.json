@@ -3,33 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev\" \"make-agent dev\"",
-    "dev:agent": "next dev",
-    "build": "next build",
+    "agent": "concurrently \"tsx src/index.ts\" \"make-agent dev\"",
+    "api": "tsx src/index.ts",
+    "build": "tsc",
     "deploy": "next build && make-agent deploy -u https://evm-test-agent.vercel.app/",
-    "start": "next start",
-    "lint": "next lint",
-    "fmt": "prettier --write ."
+    "lint": "biome check && prettier --check .",
+    "fmt": "biome format --write . && prettier --write ."
   },
   "dependencies": {
     "@bitte-ai/agent-sdk": "^0.4.1",
-    "next": "^15.5.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "redoc": "^2.5.0",
-    "vercel-url": "^0.2.8",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "viem": "^2.37.7",
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
+    "biome": "^0.3.3",
     "concurrently": "^9.2.1",
-    "eslint": "^9.36.0",
-    "eslint-config-next": "^15.5.3",
     "make-agent": "^0.4.1",
     "prettier": "^3.6.2",
     "typescript": "5.9.2"

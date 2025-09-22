@@ -1,8 +1,7 @@
-import { normalizeSignature } from "@/src/app/api/logic";
 import {
   SendTransactionSchema,
   SignatureValidationSchema,
-} from "@/src/app/api/schema";
+} from "../src/lib/schema";
 
 describe("verifySignature", () => {
   it("signMessage", async () => {

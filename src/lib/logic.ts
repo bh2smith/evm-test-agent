@@ -16,17 +16,6 @@ import {
 import { type MessageData } from "./schema";
 import { SignRequest } from "@bitte-ai/agent-sdk/evm";
 
-export const normalizeSignature = (
-  sig: string | { r: string; s: string; v: number | string },
-): Hex => {
-  if (typeof sig === "string") return sig as Hex;
-  return serializeSignature({
-    r: sig.r as Hex,
-    s: sig.s as Hex,
-    v: BigInt(typeof sig.v === "string" ? parseInt(sig.v, 16) : sig.v),
-  });
-};
-
 export function buildSendTransactions(
   to: Address,
   numSuccess: number,
