@@ -1,15 +1,18 @@
 import { Router, Request, Response } from "express";
-import { SignMessageSchema } from "../../lib/schema";
+import { isInvalid, SignMessageSchema, validateQuery } from "../../lib/schema";
 import { SEPOLIA_CHAIN_ID } from "../../config";
 
 const ethTypedData = Router();
 
 ethTypedData.get("/", async (req: Request, res: Response) => {
-  const search = new URLSearchParams(req.url);
-  console.log("eth_signTypedData/", search);
-  const { evmAddress } = SignMessageSchema.parse(
-    Object.fromEntries(search.entries()),
-  );
+  const input = validateQuery(req, SignMessageSchema);
+  if (isInvalid(input)) {
+    res.status(400).json({
+      error: input.error,
+    });
+    return;
+  }
+  const { evmAddress } = input.query;
 
   const dataString = JSON.stringify({
     domain: {
