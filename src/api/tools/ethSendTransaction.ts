@@ -1,15 +1,23 @@
 import { Router, Request, Response } from "express";
 import { Hex } from "viem";
-import { SendTransactionSchema } from "../../lib/schema";
+import {
+  isInvalid,
+  SendTransactionSchema,
+  validateQuery,
+} from "../../lib/schema";
 import { buildSendTransactions } from "../../lib/logic";
 
 const ethTxHandler = Router();
 
 ethTxHandler.get("/", async (req: Request, res: Response) => {
-  const search = new URLSearchParams(req.url);
-  console.log("sendTransaction/", search);
-  const { numFail, numSuccess, evmAddress, callData } =
-    SendTransactionSchema.parse(Object.fromEntries(search.entries()));
+  const input = validateQuery(req, SendTransactionSchema);
+  if (isInvalid(input)) {
+    res.status(400).json({
+      error: input.error,
+    });
+    return;
+  }
+  const { numFail, numSuccess, evmAddress, callData } = input.query;
   const result = buildSendTransactions(
     evmAddress,
     numSuccess,

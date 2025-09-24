@@ -28,7 +28,7 @@ app.get("/", (_req, res) => res.redirect(302, "/docs"));
 app.use("/api/tools/eth_sign", ethSignHandler);
 app.use("/api/tools/personal_sign", ethMessageHandler);
 app.use("/api/tools/eth_signTypedData", ethTypedData);
-app.use("/api/tools/eth_sendTransaction", ethTxHandler);
+app.use("/api/tools/sendTransaction", ethTxHandler);
 
 app.get(
   ["/favicon.ico", "/favicon-16x16.png", "/favicon-32x32.png"],
